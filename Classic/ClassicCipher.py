@@ -1,12 +1,18 @@
 import sys
 from pathlib import Path
+from math import *
 
 def ceasar(plain, c, crypt):
 
     cipher = open(c, "w")
     text = ""
-    key = int(input("Enter your Key: "))
-    key = key % 26
+    try:
+        key = int(input("Enter your Key: "))
+        key = key % 26
+
+    except ValueError:
+        ceasar(plain, c, crypt)
+
     match crypt:
 
         case "-e":
@@ -58,7 +64,88 @@ def ceasar(plain, c, crypt):
 def affine(plain, c, crypt):
     
     cipher = open(c, "w")
-    cipher.write(plain)
+    text = ""
+    try:
+        a, b = input("Your key should be integer\nAs a(plain) + b; gcd(a, 26) must equal to 1\nEnter your desire key: ").split()
+        a = int(a)
+        b = int(b)
+        if gcd(a, 26) != 1:
+            raise ValueError
+    
+    except ValueError:
+        affine(plain, c, crypt)
+
+    A = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25]
+    a_prime = [1, 9, 21, 15, 3, 19, 7, 23, 11, 5, 17, 25]
+
+    match crypt:
+
+        case "-e":
+            for i in plain:
+                if i.isalpha():
+                    if i.islower():
+                        index = ord(i) - 96
+                        index = a * index + b
+                        index = index % 26
+                        if index == 0:
+                            string = chr(122)
+                            text += string
+
+                        else:
+                            string = chr(index + 96)
+                            text += string
+                    
+                    elif i.isupper():
+                        index = ord(i) - 64
+                        index = a * index + b
+                        index = index % 26
+                        if index == 0:
+                            string = chr(90)
+                            text += string
+
+                        else:
+                            string = chr(index + 64)
+                            text += string
+                else:
+                    text += i
+
+        case "-d":
+
+            # Creating the decryption key as we need a^(-1) 
+            # Which will calculate from A & a_prime lists by matching the index of the list
+            for k in range(len(A)):
+                if A[k] == a:
+                    a = a_prime[k]
+
+            for i in plain:
+                if i.isalpha():
+                    if i.islower():
+                        index = ord(i) - 96
+                        index = a * (index - b)
+                        index = index % 26
+                        if index == 0:
+                            string = chr(122)
+                            text += string
+
+                        else:
+                            string = chr(index + 96)
+                            text += string
+                    
+                    elif i.isupper():
+                        index = ord(i) - 64
+                        index = a * (index - b)
+                        index = index % 26
+                        if index == 0:
+                            string = chr(90)
+                            text += string
+
+                        else:
+                            string = chr(index + 64)
+                            text += string
+                else:
+                    text += i
+            
+    cipher.write(text)
 
 def main(p, c, crypt):
 
@@ -105,3 +192,4 @@ except EOFError:
     sys.exit()
 
 main(sys.argv[2], sys.argv[3], sys.argv[1])
+
