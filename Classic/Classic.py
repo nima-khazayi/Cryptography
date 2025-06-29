@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from math import *
 
-def ceasar(plain, c, crypt):
+def caesar(plain, c, crypt):
 
     cipher = open(c, "w")
     text = ""
@@ -11,7 +11,7 @@ def ceasar(plain, c, crypt):
         key = key % 26
 
     except ValueError:
-        ceasar(plain, c, crypt)
+        caesar(plain, c, crypt)
 
     match crypt:
 
@@ -158,7 +158,7 @@ def main(p, c, crypt):
     match method:
 
         case 1:
-            ceasar(plain, c, crypt)
+            caesar(plain, c, crypt)
 
         case 2:
             affine(plain, c, crypt)
