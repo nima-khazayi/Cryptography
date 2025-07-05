@@ -60,7 +60,6 @@ def main(p, c):
                         else:
                             string = chr(index + 96)
 
-                        print(string, i, tmp)
                         text += string
                         counter = (counter + 1) % length
 
